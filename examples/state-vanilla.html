@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>fscss-props · vanilla store</title>
+  <script src="../fscss-props.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      m: 0;
+      min-h: 100vh;
+      center: both;
+      p: 24px;
+      bg: #0b1020;
+      color: #e6edf7;
+      ff: system-ui, sans-serif;
+    }
+    .panel {
+      w: 100%;
+      max-w: 420px;
+      stack: 16px;
+      p: 24px;
+      bg: #121a30;
+      border: 1px solid #22304f;
+      rounded: 16px;
+    }
+    h1 {
+      fs: 18px;
+      m: 0;
+    }
+    label {
+      fs: 13px;
+      color: #9fb0d0;
+      stack: 6px;
+    }
+    input[type=range] {
+      w: 100%;
+    }
+    .preview {
+      min-h: 120px;
+      center: both;
+      fw: 600;
+      trans: all 0.15s ease;
+    }
+    pre {
+      m: 0;
+      p: 12px;
+      fs: 11px;
+      bg: #0a0f1e;
+      rounded: 10px;
+      color: #9fb0d0;
+      white-space: pre-wrap;
+    }
+    .bar {
+      hstack: 8px;
+    }
+    button {
+      flex: 1;
+      py: 8px;
+      rounded: 10px;
+      border: 1px solid #2c3d66;
+      bg: #1b2745;
+      color: inherit;
+      font: inherit;
+      cur: pointer;
+    }
+    button[aria-pressed=true] {
+      bg: #6366f1;
+      border-color: #818cf8;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>Vanilla store → fscssProp</h1>
+    <div class="preview" id="box">Preview</div>
+    <label>Padding <input id="pad" type="range" min="8" max="40" value="16"></label>
+    <label>Radius <input id="rad" type="range" min="0" max="32" value="12"></label>
+    <div class="bar" id="themes">
+      <button type="button" data-bg="#6366f1" aria-pressed="true">Indigo</button>
+      <button type="button" data-bg="#0ea5e9">Sky</button>
+      <button type="button" data-bg="#10b981">Emerald</button>
+    </div>
+    <pre id="out"></pre>
+  </div>
+
+  <script>
+    function createStore(initial) {
+      let state = { ...initial };
+      const subs = new Set();
+      return {
+        get: () => state,
+        set(patch) {
+          state = { ...state, ...patch };
+          subs.forEach((fn) => fn(state));
+        },
+        subscribe(fn) {
+          subs.add(fn);
+          fn(state);
+          return () => subs.delete(fn);
+        },
+      };
+    }
+
+    const box = document.getElementById('box');
+    const out = document.getElementById('out');
+    const store = createStore({ pad: 16, radius: 12, bg: '#6366f1' });
+
+    store.subscribe((s) => {
+      // One text blob keeps layout/theme exclusive and easy to debug
+      box.fscssPropText = [
+        `p: ${s.pad}px`,
+        `rounded: ${s.radius}px`,
+        `bg: ${s.bg}`,
+        'color: #fff',
+        'center: true',
+      ].join('; ');
+      out.textContent = box.fscssPropText.replace(/; /g, ';\n');
+    });
+
+    document.getElementById('pad').oninput = (e) =>
+      store.set({ pad: +e.target.value });
+    document.getElementById('rad').oninput = (e) =>
+      store.set({ radius: +e.target.value });
+
+    document.getElementById('themes').onclick = (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      [...e.currentTarget.children].forEach((b) =>
+        b.setAttribute('aria-pressed', b === btn));
+      store.set({ bg: btn.dataset.bg });
+    };
+  </script>
+</body>
+</html>
