@@ -1,0 +1,39 @@
+{
+  "name": "fscss-props",
+  "version": "1.0.0",
+  "description": "Lightweight browser runtime for FSCSS property shorthands (size, mx/px, stack, ratio-fit, …). No @define or arrays — expand CSS and drive styles from JS.",
+  "main": "fscss-props.js",
+  "browser": "fscss-props.js",
+  "files": [
+    "fscss-props.js",
+    "README.md",
+    "examples"
+  ],
+  "scripts": {
+    "serve": "npx --yes serve . -p 5173"
+  },
+  "keywords": [
+    "fscss",
+    "css",
+    "xfscss", 
+    "shorthand",
+    "runtime",
+    "browser",
+    "ratio-fit",
+    "utility"
+  ],
+  "author": "Figsh",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Figsh/fscss-props"
+  },
+  "bugs": {
+    "url": "https://github.com/Figsh/fscss-props/issues"
+  },
+  "homepage": "https://github.com/Figsh/fscss-props#readme",
+  "peerDependencies": {},
+  "engines": {
+    "node": ">=16"
+  }
+}
