@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fscss-props demo</title>
+<script src="../fscss-props.js"></script>
+<style>
+*{
+  box-sizing: border-box;
+}
+body{
+  m: 0;
+  p: 24px;
+  bg: #0b1020;
+  color: #e6edf7;
+  ff: system-ui, sans-serif;
+  lh: 1.5;
+}
+.wrap{
+  max-w: 960px;
+  mx: auto;
+  stack: 20px;
+}
+h1{
+  fs: 26px;
+  m: 0;
+}
+h2{
+  fs: 13px;
+  fw: 600;
+  m: 0;
+  color: #9fb0d0;
+  tt: uppercase;
+  ls: .08em;
+}
+small{
+  color: #7e90b3;
+}
+.card{
+  bg: #121a30;
+  border: 1px solid #22304f;
+  rounded: 16px;
+  p: 20px;
+  stack: 14px;
+}
+.row{
+  auto-fit: 300px;
+  gap: 20px;
+}
+.bar{
+  hstack: 8px;
+  fwrap: wrap;
+}
+button{
+  cur: pointer;
+  bg: #1b2745;
+  color: inherit;
+  border: 1px solid #2c3d66;
+  rounded: 999px;
+  px: 14px;
+  py: 6px;
+  font: inherit;
+}
+button:hover{
+  bg: #25365f;
+}
+button[aria-pressed=true]{
+  bg: #6366f1;
+  border-color: #818cf8;
+}
+label{
+  fs: 13px;
+  color: #9fb0d0;
+  stack: 2px;
+}
+input[type=range]{
+  w: 100%;
+}
+.stage{
+  h: 260px;
+  bg: #0a0f1e;
+  rounded: 12px;
+  center: true;
+  ov: hidden;
+}
+#target{
+  trans: all .12s;
+  fw: 700;
+  color: #fff;
+}
+.tile{
+  bg: #1b2745;
+  rounded: 10px;
+  p: 14px;
+  ta: center;
+  shrink: 0;
+  min-w: 90px;
+}
+.tile:nth-child(odd){
+  bg: #223158;
+  }
+.ratio{
+  pos: relative;
+  h: 220px;
+  container-type: size;
+  bg: #0a0f1e;
+  rounded: 12px;
+}
+#rbox{
+  bg: #f59e0b;
+  color: #111;
+  fw: 700;
+  center: true;
+  rounded: 8px;
+}
+.rz{
+  pos: relative;
+  size: 260px 140px;
+  min-size: 120px 80px;
+  max-w: 100%;
+  bg: linear-gradient(135deg, #0ea5e9, #6366f1);
+  rounded: 14px;
+  center: true;
+  fw: 600;
+}
+.grip{
+  pos: absolute;
+  size: 22px;
+  right: 0;
+  bottom: 0;
+  cur: nwse-resize;
+  bg: #ffffff55;
+  rounded-tl: 12px;
+  rounded-br: 14px;
+  touch-action: none;
+}
+#txt{
+  m: 0;
+}
+pre{
+  m: 0;
+  fs: 12px;
+  color: #9fb0d0;
+  white-space: pre-wrap;
+}
+textarea{
+  w: 100%;
+  h: 150px;
+  bg: #0a0f1e;
+  color: #cfe0ff;
+  border: 1px solid #22304f;
+  rounded: 10px;
+  p: 10px;
+  font: 12px/1.5 ui-monospace, monospace;
+  resize: vertical;
+  }
+</style>
+<style id="live"></style>
+</head>
+<body>
+<div class="wrap">
+  <h1>fscss-props runtime</h1>
+  <div class="card">
+    <h2>0. inline styles</h2>
+    <div class="bar">
+      <div class="mini" style="bg: red; size: 80px; center: true; rounded: 12px;">Hi</div>
+      <button onclick="this.fscssProp.bg = this.fscssProp.bg ? null : 'red';"
+              style="padding: 10px; rounded: 34px; border: 2.5px solid #489;">Click (toggle bg)</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="card">
+      <h2>1. shape lab (two way)</h2>
+      <div class="stage"><div id="target">Hi</div></div>
+      <label>size <input id="size" type="range" min="40" max="220" value="120"></label>
+      <label>rounded <input id="radius" type="range" min="0" max="110" value="24"></label>
+      <label>rotate <input id="rotate" type="range" min="0" max="360" value="0"></label>
+      <label>ring <input id="ring" type="range" min="0" max="20" value="0"></label>
+      <label>hue <input id="hue" type="range" min="0" max="360" value="240"></label>
+      <small>Edit the text, the box follows. Move a slider, the text follows.</small>
+      <textarea id="code" spellcheck="false"></textarea>
+    </div>
+    <div class="stack-col" style="stack: 20px;">
+      <div class="card">
+        <h2>2. layout switcher</h2>
+        <div class="bar" id="layouts">
+          <button data-l="stack: 8px" aria-pressed="true">stack</button>
+          <button data-l="cols: 3; gap: 10px">cols 3</button>
+          <button data-l="auto-fit: 110px; gap: 10px">auto-fit</button>
+          <button data-l="hstack: 10px; ov: auto">hstack</button>
+        </div>
+        <div id="grid">
+          <div class="tile">1</div><div class="tile">2</div><div class="tile">3</div>
+          <div class="tile">4</div><div class="tile">5</div><div class="tile">6</div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>3. ratio-fit</h2>
+        <div class="bar" id="ratios">
+          <button data-r="1/1">1:1</button>
+          <button data-r="4/3">4:3</button>
+          <button data-r="16/9" aria-pressed="true">16:9</button>
+          <button data-r="21/9">21:9</button>
+          <button data-r="9/16">9:16</button>
+        </div>
+        <div class="ratio"><div id="rbox">16:9</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="card">
+      <h2>4. drag to resize</h2>
+      <div class="rz" id="rz">drag the corner<div class="grip" id="grip"></div></div>
+      <pre id="rzOut"></pre>
+    </div>
+    <div class="card">
+      <h2>5. line-clamp toggle</h2>
+      <div class="bar" id="clamps">
+        <button data-n="1">1 line</button>
+        <button data-n="2" aria-pressed="true">2 lines</button>
+        <button data-n="3">3 lines</button>
+        <button data-n="0">full</button>
+      </div>
+      <p id="txt">FSCSS properties are plain CSS you can type fast. Each shorthand expands to real longhands, the runtime keeps them in sync with the DOM, and anything you set from JavaScript is removed cleanly when you set it back to null. This paragraph is clamped by one property.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h2>6. live &lt;style&gt; editor</h2>
+    <div class="glass-demo">live</div>
+    <textarea id="liveCss" spellcheck="false"></textarea>
+  </div>
+</div>
+<script src="demo.js"></script>
+</body>
+</html>
